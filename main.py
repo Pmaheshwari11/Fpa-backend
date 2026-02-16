@@ -11,11 +11,12 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    # Remove the / at the end
+    allow_origins=["https://fpa-frontend-gold.vercel.app"], 
+    allow_credentials=True,  # Recommended if you use cookies/auth later
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 def get_db():
 
@@ -25,6 +26,10 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@app.get("/")
+def health_check():
+    return {"status": "healthy"}
 
 
 @app.get("/")
