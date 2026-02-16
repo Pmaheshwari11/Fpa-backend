@@ -1,27 +1,28 @@
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+
+# Import from your local files
 import models
 import crud
 from database import engine, SessionLocal
-from fastapi import FastAPI, Depends
-from sqlalchemy.orm import Session
-from fastapi.middleware.cors import CORSMiddleware
 
+# Create tables on startup
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    # Remove the / at the end
     allow_origins=["https://fpa-frontend-gold.vercel.app"], 
-    allow_credentials=True,  # Recommended if you use cookies/auth later
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Dependency to handle the session lifecycle
 def get_db():
-
     db = SessionLocal()
-
     try:
         yield db
     finally:
